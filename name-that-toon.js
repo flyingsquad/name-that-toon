@@ -96,7 +96,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 
 		if (tokens.length <= 0) {
 			let name = await getName(table1, table2);
-			navigator.clipboard.writeText(name);
+			game.clipboard.copyPlainText(name);
 			ui.notifications.notify(`Name ${name} copied to clipboard.`);
 			return;
 		}
