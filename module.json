@@ -12,8 +12,8 @@
     "verified": "13"
   },
   "esmodules": ["name-that-toon.js"],
-  "version": "0.0.0",
+  "version": "0.0.1",
   "url": "https://github.com/flyingsquad/name-that-toon",
   "manifest": "https://raw.githubusercontent.com/flyingsquad/name-that-toon/main/module.json",
-  "download": "https://github.com/flyingsquad/name-that-toon/archive/refs/tags/v0.0.0.zip"
+  "download": "https://github.com/flyingsquad/name-that-toon/archive/refs/tags/v0.0.1.zip"
 }
