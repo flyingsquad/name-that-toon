@@ -14,3 +14,5 @@ To use:
 * Click Generate Names
 
 The selected tokens, if any, will be given names drawn from the selected tables. If no tokens were selected a name will be placed on the clipboard.
+
+The tables you select will be remembered in the settings for the module and be used as the default the next time you generate names.
