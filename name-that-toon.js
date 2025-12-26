@@ -26,7 +26,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 		let text = '';
 		if (name1)
 			text += name1;
-		if (text)
+		if (text && name2)
 			text += ' ';
 		if (name2)
 			text += name2;
@@ -37,7 +37,27 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
     nameButton.click(async (ev) => {
 		let tokens = canvas.tokens.controlled;
 		
-		let nameTables = game.tables.contents.filter((t) => t.name.match(/name/i));
+		let linkedActor = false;
+		let renameLinked = false;
+		
+		for (let t of tokens) {
+			if (t.document.actorLink) {
+				linkedActor = true;
+				break;
+			}
+		}
+
+		let prompt;
+		if (tokens.length > 0) {
+			prompt = `<p>Rename selected tokens.</p>\n`;
+			if (linkedActor) {
+				prompt += `<div style="display: flex; flex-direction: row"><input type="checkbox" id="renameLinked" value="yes"><label for="renameLinked">Also rename linked actors</label></div>\n`;
+			}
+		} else {
+			prompt = `<p>Copy name to clipboard.</p>\n`;
+		}
+		
+		let nameTables = game.tables.contents.filter((t) => t.description.match(/name table/i));
 
 		const tables = nameTables.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -61,6 +81,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 				},
 				content: `
 				  <form>
+					${prompt}
 					<div class="form-group">
 					<p>
 					  <label for="table">Table 1:</label>
@@ -82,6 +103,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 					callback: (event, button, dialog) => {
 					  tableName1 = button.form.elements.table1.value;
 					  tableName2 = button.form.elements.table2.value;
+					  renameLinked = button.form.elements.renameLinked.checked;
 					  return true;
 					}
 				}
@@ -111,33 +133,32 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 		}
 
 		for (let token of canvas.tokens.controlled) {
-			// Don't change names of actors that have links.
-			if (token.document.actorLink)
-				continue;
-
 		  // Roll on the tables.
 
-		  let name1;
-		  if (table1) {
-			const rollResult1 = await table1.roll();
-			name1 = rollResult1.results[0].description;
-		  }
+			let name1;
+			if (table1) {
+				const rollResult1 = await table1.roll();
+				name1 = rollResult1.results[0].description;
+			}
 
-		  let name2;
-		  if (table2) {
-			const rollResult2 = await table2.roll();
-			name2 = rollResult2.results[0].description;
-		  }
+			let name2;
+			if (table2) {
+				const rollResult2 = await table2.roll();
+				name2 = rollResult2.results[0].description;
+			}
 
-		  let text = '';
-		  if (name1)
-			text += name1;
-		  if (text)
-			text += ' ';
-		  if (name2)
-			text += name2;
+			let text = '';
+			if (name1)
+				text += name1;
+			if (text)
+				text += ' ';
+			if (name2)
+				text += name2;
 
-		   await token.document.update({name: text });
+			await token.document.update({name: text });
+			if (token.document.actorLink && renameLinked) {
+				await token.document.actor.update({name: text});
+			}
 		}
     });
 });
