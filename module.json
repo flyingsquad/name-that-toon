@@ -1,19 +1,35 @@
 {
   "id": "name-that-toon",
   "title": "Name That Toon",
-  "description": "Give random names to selected tokens.",
+  "description": "<p>Give random names to selected tokens.</p>",
   "authors": [
     {
-		"name": "flying-squad"
+      "name": "flying-squad",
+      "flags": {}
     }
   ],
   "compatibility": {
     "minimum": "13",
     "verified": "13"
   },
-  "esmodules": ["name-that-toon.js"],
-  "version": "0.0.4",
+  "esmodules": [
+    "name-that-toon.js"
+  ],
+  "version": "0.0.5",
   "url": "https://github.com/flyingsquad/name-that-toon",
   "manifest": "https://raw.githubusercontent.com/flyingsquad/name-that-toon/main/module.json",
-  "download": "https://github.com/flyingsquad/name-that-toon/archive/refs/tags/v0.0.4.zip"
+  "download": "https://github.com/flyingsquad/name-that-toon/archive/refs/tags/v0.0.5.zip",
+  "packs": [
+    {
+      "name": "names",
+      "label": "Name Tables",
+      "path": "packs/names",
+      "type": "RollTable",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
+  "flags": {}
 }
