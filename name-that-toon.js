@@ -103,13 +103,14 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 					callback: (event, button, dialog) => {
 					  tableName1 = button.form.elements.table1.value;
 					  tableName2 = button.form.elements.table2.value;
-					  renameLinked = button.form.elements.renameLinked.checked;
+					  if (button.form.elements.renameLinked)
+						renameLinked = button.form.elements.renameLinked.checked;
 					  return true;
 					}
 				}
 			});
 			if (!selected) {
-				return ui.notifications.warn("No table selected.");
+				return;
 			}
 		} catch {
 			return;
@@ -120,7 +121,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 		const table1 = game.tables.get(tableName1);
 		const table2 = game.tables.get(tableName2);
 		if (!table1 && !table2)
-			return ui.notifications.error("No names generated.");
+			return ui.notifications.error("No tables selected; no names generated.");
 
 		game.settings.set('name-that-toon', 'table1', tableChoices[tableName1]);
 		game.settings.set('name-that-toon', 'table2', tableChoices[tableName2]);
@@ -135,25 +136,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 		for (let token of canvas.tokens.controlled) {
 		  // Roll on the tables.
 
-			let name1;
-			if (table1) {
-				const rollResult1 = await table1.roll();
-				name1 = rollResult1.results[0].description;
-			}
-
-			let name2;
-			if (table2) {
-				const rollResult2 = await table2.roll();
-				name2 = rollResult2.results[0].description;
-			}
-
-			let text = '';
-			if (name1)
-				text += name1;
-			if (text)
-				text += ' ';
-			if (name2)
-				text += name2;
+			let text = await getName(table1, table2);
 
 			await token.document.update({name: text });
 			if (token.document.actorLink && renameLinked) {
