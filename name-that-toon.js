@@ -52,38 +52,45 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 		
 		let tableName1, tableName2;
 
-		const selected = await Dialog.prompt({
-		title: "Select Name Tables",
-		label: "Generate Names",
-		content: `
-		  <form>
-			<div class="form-group">
-			<p>
-			  <label for="table">Table 1:</label>
-			  <select id="table1" name="table">
-				${Object.entries(tableChoices).map(([id, name]) => `<option value="${id}"` + (name == t1 ? ' selected="selected"' : "") + `>${name}</option>`).join("")}
-			  </select>
-			  </p>
-			  <p>
-			  <label for="table">Table 2:</label>
-			  <select id="table2" name="table">
-				${Object.entries(tableChoices).map(([id, name]) => `<option value="${id}"` + (name == t2 ? ' selected="selected"' : "") + `>${name}</option>`).join("")}
-			  </select>
-			  </p>
-			</div>
-		  </form>
-		`,
-		callback: (html) => {
-		  tableName1 = html.find("#table1").val();
-		  tableName2 = html.find("#table2").val();
-		  return true;
+		try {
+			const selected = await foundry.applications.api.DialogV2.prompt({
+				window: {
+					title: "Select Name Tables"
+				},
+				content: `
+				  <form>
+					<div class="form-group">
+					<p>
+					  <label for="table">Table 1:</label>
+					  <select id="table1" name="table">
+						${Object.entries(tableChoices).map(([id, name]) => `<option value="${id}"` + (name == t1 ? ' selected="selected"' : "") + `>${name}</option>`).join("")}
+					  </select>
+					  </p>
+					  <p>
+					  <label for="table">Table 2:</label>
+					  <select id="table2" name="table">
+						${Object.entries(tableChoices).map(([id, name]) => `<option value="${id}"` + (name == t2 ? ' selected="selected"' : "") + `>${name}</option>`).join("")}
+					  </select>
+					  </p>
+					</div>
+				  </form>
+				`,
+				ok: {
+					label: "Generate Names",
+					callback: (event, button, dialog) => {
+					  tableName1 = button.form.elements.table1.value;
+					  tableName2 = button.form.elements.table2.value;
+					  return true;
+					}
+				}
+			});
+			if (!selected) {
+				return ui.notifications.warn("No table selected.");
+			}
+		} catch {
+			return;
 		}
-		});
 
-		if (!selected) {
-			return ui.notifications.warn("No table selected.");
-		}
-		
 		// Get the selected table
 
 		const table1 = game.tables.get(tableName1);
