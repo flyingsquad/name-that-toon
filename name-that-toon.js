@@ -36,8 +36,10 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 
     nameButton.click(async (ev) => {
 		let tokens = canvas.tokens.controlled;
+		
+		let nameTables = game.tables.contents.filter((t) => t.name.match(/name/i));
 
-		const tables = game.tables.contents.sort((a, b) => a.name.localeCompare(b.name));
+		const tables = nameTables.sort((a, b) => a.name.localeCompare(b.name));
 
 		// Build the selection dialog
 
