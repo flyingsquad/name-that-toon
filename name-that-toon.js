@@ -2,8 +2,11 @@
  */
  
 Hooks.on("renderActorDirectory", (app, html, data) => {
-	if (!game.user.isGM)
-		return;
+
+	if (!game.user.isGM) {
+		if (!game.settings.get('name-that-toon', 'allowPlayers'))
+			return;
+	}
 
     const nameButton = $("<button id='name-that-toon-button'><i class='fas fa-file-text'></i></i>Name That Toon</button>");
     $(html).find(".directory-footer").append(nameButton);
@@ -48,7 +51,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 		}
 
 		let prompt;
-		if (tokens.length > 0) {
+		if (tokens.length > 0 && game.user.isGM) {
 			prompt = `<p>Rename selected tokens.</p>\n`;
 			if (linkedActor) {
 				prompt += `<div style="display: flex; flex-direction: row"><input type="checkbox" id="renameLinked" value="yes"><label for="renameLinked">Also rename linked actors</label></div>\n`;
@@ -69,9 +72,12 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 		}, {});
 		tableChoices['0'] = 'None';
 
+		let t1 = game.user.getFlag('name-that-toon', 'table1');
+		let t2 = game.user.getFlag('name-that-toon', 'table2');
+/*		
 		let t1 = game.settings.get('name-that-toon', 'table1');
 		let t2 = game.settings.get('name-that-toon', 'table2');
-		
+*/
 		let tableName1, tableName2;
 
 		try {
@@ -123,10 +129,10 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 		if (!table1 && !table2)
 			return ui.notifications.error("No tables selected; no names generated.");
 
-		game.settings.set('name-that-toon', 'table1', tableChoices[tableName1]);
-		game.settings.set('name-that-toon', 'table2', tableChoices[tableName2]);
+		game.user.setFlag('name-that-toon', 'table1', tableChoices[tableName1]);
+		game.user.setFlag('name-that-toon', 'table2', tableChoices[tableName2]);
 
-		if (tokens.length <= 0) {
+		if (tokens.length <= 0 || !game.user.isGM) {
 			let name = await getName(table1, table2);
 			game.clipboard.copyPlainText(name);
 			ui.notifications.notify(`Name ${name} copied to clipboard.`);
@@ -150,24 +156,13 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
  * Create the configuration settings.
  */
 Hooks.once('init', async function () {
-	game.settings.register('name-that-toon', 'table1', {
-	  name: 'First Table Name',
-	  hint: 'The name of the first default name table.',
+	game.settings.register('name-that-toon', 'allowPlayers', {
+	  name: 'Allow players to use module',
+	  hint: 'The Name That Toon button will appear in the Actors tab for players.',
 	  scope: 'world',     // "world" = sync to db, "client" = local storage
 	  config: true,       // false if you dont want it to show in module config
-	  type: String,       // Number, Boolean, String, Object
-	  default: "",
-	  onChange: value => { // value is the new value of the setting
-		//console.log('swade-charcheck | budget: ' + value)
-	  }
-	});
-	game.settings.register('name-that-toon', 'table2', {
-	  name: 'Second Table Name',
-	  hint: 'The name of the second default name table.',
-	  scope: 'world',     // "world" = sync to db, "client" = local storage
-	  config: true,       // false if you dont want it to show in module config
-	  type: String,       // Number, Boolean, String, Object
-	  default: "",
+	  type: Boolean,       // Number, Boolean, String, Object
+	  default: true,
 	  onChange: value => { // value is the new value of the setting
 		//console.log('swade-charcheck | budget: ' + value)
 	  }
