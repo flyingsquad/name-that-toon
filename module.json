@@ -15,10 +15,10 @@
   "esmodules": [
     "name-that-toon.js"
   ],
-  "version": "0.0.9",
+  "version": "1.0.0",
   "url": "https://github.com/flyingsquad/name-that-toon",
   "manifest": "https://raw.githubusercontent.com/flyingsquad/name-that-toon/main/module.json",
-  "download": "https://github.com/flyingsquad/name-that-toon/archive/refs/tags/v0.0.9.zip",
+  "download": "https://github.com/flyingsquad/name-that-toon/archive/refs/tags/v1.0.0.zip",
   "packs": [
     {
       "name": "names",
