@@ -15,10 +15,10 @@
   "esmodules": [
     "name-that-toon.js"
   ],
-  "version": "1.0.3",
+  "version": "14.0.0",
   "url": "https://github.com/flyingsquad/name-that-toon",
   "manifest": "https://raw.githubusercontent.com/flyingsquad/name-that-toon/main/module.json",
-  "download": "https://github.com/flyingsquad/name-that-toon/archive/refs/tags/v1.0.3.zip",
+  "download": "https://github.com/flyingsquad/name-that-toon/archive/refs/tags/v14.0.0.zip",
   "packs": [
     {
       "name": "names",
@@ -28,7 +28,19 @@
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      }
+      },
+      "flags": {}
+    },
+    {
+      "name": "macros",
+      "label": "Macros",
+      "path": "packs/macros",
+      "type": "Macro",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
     }
   ],
   "flags": {}
